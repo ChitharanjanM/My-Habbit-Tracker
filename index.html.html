@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Habit Tracker</title>
+
+<!-- iOS "Add to Home Screen" app behavior -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Habits">
+<meta name="theme-color" content="#2c2e31">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAErklEQVR4nO3d0XEaMRCH8XUmbbgDT2bchhtyDW7IDbmRPDBhCPA/Dml3tdJ932N44KL9oZMxJC9vf96N6F6/Rl8A1Q0cJAMHycBBMnCQDBwkAwfJwEEycJAMHCQDB8nAQTJwkAwcJAMHycBBMnCQ7PfA5/7++hn47BP18fk65Hlfkj8mCIjOMqHk4YCFYzlEMnDAIqhoIrE4YJFQHJHAn1aQkVPcOkftHDuveNQ5fKIGrqQ/jod/GUA0l7y2zji2rx4WLqUtsieOjYuGhXsJq53x9jkyIkpYVTccCjIy4lJr6/Xzi89t5e7VwCKtoPV32Dl4P6Nm/XOJOnOwbWQWtNq9OLihFOnumnduHv47BzJG5b7yXTg4bdSvZ0bOOwfbxth8178dB9vGLDVPynPnYNuokOMU+PQ5ycBBskYcHDjmqm1ebjsHB446zfQre5o0cJAMHCQDB8nAQTJwkAwcJAMHycBBMnCQDBwkAwfJwEEycJAMHCQDx8iKf2YKHMM6yajsAxxjujRR1gc4BnSroaYPcGSnHBT0AY5CVfMBjtQejr+UD3DktXPwdXyAI6mnRl7EBzgyahh2BR/gCK9tzBW+QQiO2OaVYeAIbWoZBo64Zpdh4AhqARkGDtoIHP6tsW0YONxbRoaBw7eVZBg4HFtMhoHDq/VkGDhcWlKGgaO/VWUYODpbWIaBo6e1ZRg4aCNwNLb8tmHgaOsIMgwcDR1EhoHj2Y4jw+bCMfwzt4eSYRPhGP6d9KPJsFlwDP9O+gFl2BQ4hn8n/ZgyrD4OzhkDq4vj++tnYzDD0Ryhojj2zD7Bx5G3DauJY/9IQn0cXIYVxPHsSIJ8IMOq4WgbibsPZJyqhaN5fR19IONcLRw22gcyLiuHw8atNTKuqoijuZ7NAxm3FcWRfHNBxt2K4rDRhw+yyjgsywfbhqo0Dov3gYyNquOwSB/I2G4CHBYzD2Q8bA4c1joV3/+i4FAybCIczXl9kOxoMmwuHC6HD2TsbyYc1u0DGU81GQ5Lf3PssDJsRhx27IFlNiUOy/JxcIWz4rD4yR1chk2NIzRk2Ow4gkaIjFNz47CAQSLj3PQ4zHWcyLhsBRzmNFRkXLUIDuseLTJuWweHdQwYGXdbCocxZtdWw6H6+HxVbvCkWhDH7bDPf7LxEN22IA77f+RX4994iK5aE4f9G/zd8W88RJcti8M2x4+MPa2MgzoDB8nAQTJwkAwcJAMHycBBMnCQDBwkAwfJ3HDwL3HVyWsWjTj43cRctc2L2wrJwEEyTxwcOyrkOIV2HBw7Zql5Us63FTaPsfmufxcONo/69czI/0DK5jEq95XvxXEXJj7yu7vmnVt71I+y+MgsaLUdcHDyqFn/XF7e/ry7XIrCC53QQpfd7bairob7S1zRL8iMt8/xEVHCqrrdVk5tXzG3GJfSFtkZh+0QDZHmktfWH8epnZseUB42cCWjcBhHjcSCXmOBB1J2hZzi1jlw5zjHFhJU9MsvA8cpiDiWsyvn4TgFkc4yb9bZOC4Dys5Gnd5G4qDi8elzkoGDZOAgGThIBg6SgYNk4CAZOEgGDpKBg2TgIBk4SAYOkoGDZOAgGThI9hcfc8hCIokSiQAAAABJRU5ErkJggg==">
+<style>
+  :root {
+    --bg: #fdfcf9;
+    --ink: #2b2b2b;
+    --muted: #9a958a;
+    --grid-line: #e8e4da;
+    --workout: #ffd8a8;
+    --reading: #a8d8ea;
+    --flute: #e3b8f0;
+    --sketching: #ffe08a;
+    --skill: #b8e6c9;
+    --content: #ffb3ba;
+    --phd: #c9c9ff;
+
+    --habit-col-w: 150px;
+    --day-col-w: 32px;
+    --count-col-w: 64px;
+
+    --mt-bg: #2c2e31;
+    --mt-sub: #646669;
+    --mt-text: #d1d0c5;
+    --mt-accent: #e2b714;
+    --mt-avg: #7e8082;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    padding: 28px 32px;
+  }
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 6px;
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 10px;
+  }
+  h1 {
+    font-size: 26px;
+    margin: 0;
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  h1 .thin {
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+  }
+  .title-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    flex-wrap: wrap;
+  }
+  .stopwatch-btn {
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stopwatch-btn:hover { background: #1a1a1a; }
+  .stopwatch-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    z-index: 30;
+    width: 250px;
+    background: var(--mt-bg);
+    color: #f2f2f0;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .stopwatch-panel.open { display: block; }
+  .stopwatch-panel .sw-label {
+    font-size: 10.5px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--mt-sub);
+    margin-bottom: 4px;
+  }
+  .stopwatch-panel select,
+  .stopwatch-panel input[type="number"] {
+    width: 100%;
+    padding: 7px 8px;
+    border-radius: 7px;
+    border: 1px solid #4a4c50;
+    background: #202226;
+    color: #f2f2f0;
+    font-size: 13px;
+    margin-bottom: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .stopwatch-panel .sw-display {
+    font-family: 'Courier New', monospace;
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 1px;
+    color: var(--mt-accent);
+    margin-bottom: 12px;
+  }
+  .stopwatch-panel .sw-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  .stopwatch-panel .sw-buttons button {
+    flex: 1;
+    padding: 8px 0;
+    border-radius: 8px;
+    border: none;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .stopwatch-panel .sw-start { background: var(--mt-accent); color: #2c2e31; }
+  .stopwatch-panel .sw-pause { background: #4a4c50; color: #fff; }
+  .stopwatch-panel .sw-reset { background: transparent; color: var(--mt-sub); border: 1px solid #4a4c50 !important; }
+  .stopwatch-panel .sw-note {
+    margin-top: 10px;
+    font-size: 10.5px;
+    color: var(--mt-sub);
+    line-height: 1.4;
+  }
+  .month-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .month-controls button {
+    background: none;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+  }
+  .month-controls button:hover { background: var(--ink); color: #fff; }
+  .month-label {
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    min-width: 130px;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  /* Shared scroll container for graph + table so columns align perfectly */
+  .aligned-wrap {
+    overflow-x: auto;
+    margin-top: 14px;
+    border-radius: 14px;
+  }
+  .aligned-inner {
+    min-width: calc(var(--habit-col-w) + 31 * var(--day-col-w));
+  }
+
+  /* Monkeytype-style graph */
+  .graph-card {
+    background: var(--mt-bg);
+    border-radius: 10px 10px 0 0;
+    padding: 14px 0 4px 0;
+    position: relative;
+  }
+  .graph-success {
+    position: absolute;
+    top: 30px;
+    bottom: 8px;
+    left: 10px;
+    width: 128px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .graph-success .sr-label {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: #ff9d94;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .graph-success .sr-value {
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.05;
+  }
+  .graph-success .sr-hearts { font-size: 16px; }
+  .graph-success .sr-msg {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: #ff9d94;
+    font-weight: 700;
+  }
+  .graph-legend {
+    display: flex;
+    gap: 16px;
+    padding: 0 16px 8px calc(var(--habit-col-w) + 4px);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: var(--mt-text);
+  }
+  .graph-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .graph-legend .swatch { width: 12px; height: 2px; display: inline-block; }
+  .graph-legend .swatch.dashed { border-top: 1px dashed var(--mt-avg); background: none; height: 0; }
+
+  /* Table */
+  table {
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  th, td {
+    text-align: center;
+    padding: 0;
+    border: 1px solid var(--grid-line);
+  }
+  thead th {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    padding: 6px 0;
+    width: var(--day-col-w);
+    border-top: none;
+    background: var(--bg);
+  }
+  thead th.today {
+    color: #fff;
+    background: var(--ink);
+    border-radius: 3px 3px 0 0;
+  }
+  .habit-col {
+    text-align: left !important;
+    padding: 9px 14px !important;
+    width: var(--habit-col-w);
+    font-size: 14px;
+    font-style: italic;
+    white-space: nowrap;
+    border-left: none;
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--bg);
+  }
+  .count-col {
+    width: var(--count-col-w);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+  }
+  th.count-col {
+    font-weight: 600;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .cell-btn {
+    width: 100%;
+    height: 26px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: block;
+    padding: 0;
+  }
+  .cell-btn.done {
+    filter: saturate(1.15);
+  }
+  .cell-btn:hover:not(.done) {
+    background: #f1efe8;
+  }
+
+  .footer-note {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .stats-row {
+    display: none;
+  }
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--grid-line);
+    color: var(--muted);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    cursor: pointer;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .reset-btn:hover { border-color: var(--ink); color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="title-group">
+    <h1>Habit <span class="thin">Tracker</span></h1>
+    <button id="stopwatchToggle" class="stopwatch-btn">⏱ Timer</button>
+    <div id="stopwatchPanel" class="stopwatch-panel">
+      <div class="sw-label">Choose habit</div>
+      <select id="swHabitSelect"></select>
+      <div class="sw-label">Duration (minutes)</div>
+      <input type="number" id="swDurationInput" min="1" max="240" value="25" />
+      <div class="sw-display" id="swDisplay">25:00</div>
+      <div class="sw-buttons">
+        <button class="sw-start" id="swStartBtn">Start</button>
+        <button class="sw-pause" id="swPauseBtn">Pause</button>
+        <button class="sw-reset" id="swResetBtn">Reset</button>
+      </div>
+      <div class="sw-note" id="swNote">Starting the timer marks this habit done for today.</div>
+    </div>
+  </div>
+  <div class="month-controls">
+    <button id="prevMonth">&larr;</button>
+    <div class="month-label" id="monthLabel">MONTH</div>
+    <button id="nextMonth">&rarr;</button>
+  </div>
+</div>
+
+<div class="aligned-wrap" style="margin-top:16px;">
+  <div class="aligned-inner">
+    <div class="graph-card">
+      <div class="graph-legend">
+        <span><span class="swatch" style="background:var(--mt-accent)"></span>Daily habits done</span>
+        <span><span class="swatch dashed"></span>Average</span>
+      </div>
+      <svg id="progressSvg" width="100%" height="150" style="display:block;"></svg>
+      <div class="graph-success">
+        <div class="sr-label">Success Rate</div>
+        <div class="sr-value" id="srValue">0%</div>
+        <div class="sr-hearts" id="srHearts"></div>
+        <div class="sr-msg" id="srMsg">Keep going</div>
+      </div>
+    </div>
+
+    <table id="trackerTable">
+      <thead><tr id="headRow"></tr></thead>
+      <tbody id="bodyRows"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="footer-note" id="loadingNote">Loading saved progress...</div>
+<button class="reset-btn" id="resetBtn" style="margin-top:14px;">Reset all data</button>
+
+<script>
+const HABITS = [
+  { key: "workout", label: "Workout", color: "var(--workout)" },
+  { key: "reading", label: "Reading", color: "var(--reading)" },
+  { key: "flute", label: "Flute", color: "var(--flute)" },
+  { key: "sketching", label: "Sketching", color: "var(--sketching)" },
+  { key: "skill", label: "Skill", color: "var(--skill)" },
+  { key: "content", label: "Content Creation", color: "var(--content)" },
+  { key: "phd", label: "PhD Work", color: "var(--phd)" },
+];
+
+const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const HABIT_COL_PX = 150;
+const COUNT_COL_PX = 64;
+const MIN_DAY_COL_PX = 30;
+const MAX_DAY_COL_PX = 50;
+let DAY_COL_PX = 32;
+
+let viewYear, viewMonth;
+let data = {};
+
+function computeDayColPx(numDays) {
+  const wrap = document.querySelector('.aligned-wrap');
+  const available = (wrap ? wrap.clientWidth : 900) - HABIT_COL_PX - COUNT_COL_PX;
+  let w = Math.floor(available / numDays);
+  if (w < MIN_DAY_COL_PX) w = MIN_DAY_COL_PX;
+  if (w > MAX_DAY_COL_PX) w = MAX_DAY_COL_PX;
+  return w;
+}
+
+function pad(n) { return n < 10 ? "0" + n : "" + n; }
+function fmtDate(y, m, d) { return y + "-" + pad(m+1) + "-" + pad(d); }
+function daysInMonth(y, m) { return new Date(y, m+1, 0).getDate(); }
+function isTodayDate(y, m, d) {
+  const t = new Date();
+  return t.getFullYear() === y && t.getMonth() === m && t.getDate() === d;
+}
+
+const LS_KEY = 'habit-tracker-data-v1';
+const hasClaudeStorage = typeof window.storage !== 'undefined' && window.storage !== null;
+
+async function loadData() {
+  if (hasClaudeStorage) {
+    try {
+      const result = await window.storage.get('habit-tracker-data', false);
+      if (result && result.value) { data = JSON.parse(result.value); return; }
+    } catch (e) { /* fall through to localStorage */ }
+  }
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) data = JSON.parse(raw);
+  } catch (e) { data = {}; }
+}
+
+async function saveData() {
+  if (hasClaudeStorage) {
+    try {
+      await window.storage.set('habit-tracker-data', JSON.stringify(data), false);
+      return;
+    } catch (e) { /* fall through to localStorage */ }
+  }
+  try { localStorage.setItem(LS_KEY, JSON.stringify(data)); }
+  catch (e) { console.error('Failed to save', e); }
+}
+
+function toggleCell(habitKey, dateStr) {
+  const cellKey = habitKey + ":" + dateStr;
+  if (data[cellKey]) delete data[cellKey];
+  else data[cellKey] = true;
+  saveData();
+  render();
+}
+
+function computeStreak(habitKey) {
+  let streak = 0;
+  let d = new Date();
+  d.setHours(0,0,0,0);
+  while (true) {
+    const key = habitKey + ":" + d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate());
+    if (!data[key]) break;
+    streak++;
+    d.setDate(d.getDate() - 1);
+  }
+  return streak;
+}
+
+function render() {
+  document.getElementById("monthLabel").textContent = MONTH_NAMES[viewMonth] + " " + viewYear;
+  const numDays = daysInMonth(viewYear, viewMonth);
+
+  DAY_COL_PX = computeDayColPx(numDays);
+  document.documentElement.style.setProperty('--day-col-w', DAY_COL_PX + 'px');
+
+  const totalWidthPx = HABIT_COL_PX + numDays * DAY_COL_PX + COUNT_COL_PX;
+  const alignedInner = document.querySelector('.aligned-inner');
+  alignedInner.style.width = totalWidthPx + 'px';
+  alignedInner.style.minWidth = totalWidthPx + 'px';
+  document.getElementById('trackerTable').style.width = totalWidthPx + 'px';
+
+  const headRow = document.getElementById("headRow");
+  headRow.innerHTML = "";
+  const corner = document.createElement("th");
+  corner.className = "habit-col";
+  corner.style.borderTop = "none";
+  headRow.appendChild(corner);
+  for (let d = 1; d <= numDays; d++) {
+    const th = document.createElement("th");
+    if (isTodayDate(viewYear, viewMonth, d)) th.classList.add("today");
+    th.textContent = d;
+    headRow.appendChild(th);
+  }
+  const countTh = document.createElement("th");
+  countTh.className = "count-col";
+  countTh.textContent = "Done";
+  headRow.appendChild(countTh);
+
+  const bodyRows = document.getElementById("bodyRows");
+  bodyRows.innerHTML = "";
+  HABITS.forEach(h => {
+    const tr = document.createElement("tr");
+    const nameTd = document.createElement("td");
+    nameTd.className = "habit-col";
+    nameTd.textContent = h.label;
+    tr.appendChild(nameTd);
+
+    let count = 0;
+    for (let d = 1; d <= numDays; d++) {
+      const td = document.createElement("td");
+      const dateStr = fmtDate(viewYear, viewMonth, d);
+      const btn = document.createElement("button");
+      btn.className = "cell-btn";
+      const cellKey = h.key + ":" + dateStr;
+      if (data[cellKey]) {
+        btn.classList.add("done");
+        btn.style.background = h.color;
+        count++;
+      }
+      btn.addEventListener("click", () => toggleCell(h.key, dateStr));
+      td.appendChild(btn);
+      tr.appendChild(td);
+    }
+
+    const countTd = document.createElement("td");
+    countTd.className = "count-col";
+    countTd.textContent = count + "/" + numDays;
+    tr.appendChild(countTd);
+
+    bodyRows.appendChild(tr);
+  });
+
+  renderGraph(numDays);
+
+  document.getElementById("loadingNote").style.display = "none";
+}
+
+function smoothPath(points) {
+  if (points.length < 2) return "";
+  let d = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i === 0 ? 0 : i - 1];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2 < points.length ? i + 2 : i + 1];
+    const cp1x = p1.x + (p2.x - p0.x) / 6;
+    const cp1y = p1.y + (p2.y - p0.y) / 6;
+    const cp2x = p2.x - (p3.x - p1.x) / 6;
+    const cp2y = p2.y - (p3.y - p1.y) / 6;
+    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+  }
+  return d;
+}
+
+function renderGraph(numDays) {
+  const dayCounts = [];
+  for (let d = 1; d <= numDays; d++) {
+    let c = 0;
+    HABITS.forEach(h => { if (data[h.key + ":" + fmtDate(viewYear, viewMonth, d)]) c++; });
+    dayCounts.push(c);
+  }
+  const maxVal = HABITS.length;
+
+  const today = new Date();
+  const isCurrentMonth = today.getFullYear() === viewYear && today.getMonth() === viewMonth;
+  const daysToCount = isCurrentMonth ? today.getDate() : numDays;
+  let completedSum = 0;
+  for (let d = 0; d < daysToCount; d++) completedSum += dayCounts[d];
+  const possible = daysToCount * maxVal;
+  const successRate = possible > 0 ? Math.round((completedSum / possible) * 100) : 0;
+  const average = daysToCount > 0 ? completedSum / daysToCount : 0;
+
+  document.getElementById("srValue").textContent = successRate + "%";
+  let hearts = "", msg = "Keep going";
+  if (successRate >= 80) { hearts = "❤️❤️"; msg = "Good job"; }
+  else if (successRate >= 50) { hearts = "❤️"; msg = "Nice work"; }
+  else if (successRate > 0) { hearts = "🤍"; msg = "Keep going"; }
+  else { hearts = "🤍"; msg = "Get started"; }
+  document.getElementById("srHearts").textContent = hearts;
+  document.getElementById("srMsg").textContent = msg;
+
+  const svg = document.getElementById("progressSvg");
+  const width = HABIT_COL_PX + numDays * DAY_COL_PX;
+  const height = 150;
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  svg.setAttribute("width", width);
+  svg.setAttribute("height", height);
+  svg.innerHTML = "";
+
+  const ns = "http://www.w3.org/2000/svg";
+  const padTop = 18, padBottom = 14;
+  const plotLeft = HABIT_COL_PX;
+  const usableH = height - padTop - padBottom;
+
+  const bgRect = document.createElementNS(ns, "rect");
+  bgRect.setAttribute("x", 0);
+  bgRect.setAttribute("y", 0);
+  bgRect.setAttribute("width", width);
+  bgRect.setAttribute("height", height);
+  bgRect.setAttribute("fill", "var(--mt-bg)");
+  svg.appendChild(bgRect);
+
+  for (let v = 0; v <= maxVal; v++) {
+    const y = padTop + usableH - (v / maxVal) * usableH;
+    const line = document.createElementNS(ns, "line");
+    line.setAttribute("x1", plotLeft);
+    line.setAttribute("x2", width - 4);
+    line.setAttribute("y1", y);
+    line.setAttribute("y2", y);
+    line.setAttribute("stroke", "#3d3f43");
+    line.setAttribute("stroke-width", "1");
+    svg.appendChild(line);
+
+    const label = document.createElementNS(ns, "text");
+    label.setAttribute("x", plotLeft - 8);
+    label.setAttribute("y", y + 3);
+    label.setAttribute("text-anchor", "end");
+    label.setAttribute("font-size", "9");
+    label.setAttribute("font-family", "'Courier New', monospace");
+    label.setAttribute("fill", "var(--mt-sub)");
+    label.textContent = v;
+    svg.appendChild(label);
+  }
+
+  const points = dayCounts.map((val, i) => {
+    const x = plotLeft + DAY_COL_PX * i + DAY_COL_PX / 2;
+    const y = padTop + usableH - (val / maxVal) * usableH;
+    return { x, y, val };
+  });
+
+  const defs = document.createElementNS(ns, "defs");
+  defs.innerHTML = `
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>`;
+  svg.appendChild(defs);
+
+  const avgY = padTop + usableH - (average / maxVal) * usableH;
+  const avgLine = document.createElementNS(ns, "line");
+  avgLine.setAttribute("x1", plotLeft);
+  avgLine.setAttribute("x2", width - 4);
+  avgLine.setAttribute("y1", avgY);
+  avgLine.setAttribute("y2", avgY);
+  avgLine.setAttribute("stroke", "var(--mt-avg)");
+  avgLine.setAttribute("stroke-width", "1.5");
+  avgLine.setAttribute("stroke-dasharray", "4 3");
+  svg.appendChild(avgLine);
+
+  const avgLabel = document.createElementNS(ns, "text");
+  avgLabel.setAttribute("x", width - 6);
+  avgLabel.setAttribute("y", avgY - 5);
+  avgLabel.setAttribute("text-anchor", "end");
+  avgLabel.setAttribute("font-size", "9.5");
+  avgLabel.setAttribute("font-family", "'Courier New', monospace");
+  avgLabel.setAttribute("fill", "var(--mt-avg)");
+  avgLabel.textContent = "avg " + average.toFixed(1);
+  svg.appendChild(avgLabel);
+
+  const activeCount = isCurrentMonth ? daysToCount : numDays;
+  const activePoints = points.slice(0, activeCount);
+
+  if (activePoints.length >= 2) {
+    const path = document.createElementNS(ns, "path");
+    path.setAttribute("d", smoothPath(activePoints));
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", "var(--mt-accent)");
+    path.setAttribute("stroke-width", "2.2");
+    path.setAttribute("filter", "url(#glow)");
+    svg.appendChild(path);
+  }
+
+  activePoints.forEach((p, i) => {
+    const dot = document.createElementNS(ns, "circle");
+    dot.setAttribute("cx", p.x);
+    dot.setAttribute("cy", p.y);
+    dot.setAttribute("r", i === activePoints.length - 1 ? 3.2 : 2);
+    dot.setAttribute("fill", "var(--mt-accent)");
+    svg.appendChild(dot);
+  });
+
+  for (let i = activeCount; i < points.length; i++) {
+    const dot = document.createElementNS(ns, "circle");
+    dot.setAttribute("cx", points[i].x);
+    dot.setAttribute("cy", padTop + usableH);
+    dot.setAttribute("r", 1.3);
+    dot.setAttribute("fill", "#4a4c50");
+    svg.appendChild(dot);
+  }
+}
+
+document.getElementById("prevMonth").addEventListener("click", () => {
+  viewMonth--;
+  if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+  render();
+});
+document.getElementById("nextMonth").addEventListener("click", () => {
+  viewMonth++;
+  if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+  render();
+});
+
+document.getElementById("resetBtn").addEventListener("click", async () => {
+  if (confirm("Clear all tracked progress? This cannot be undone.")) {
+    data = {};
+    await saveData();
+    render();
+  }
+});
+
+// ---- Timer ----
+let swRunning = false;
+let swRemaining = 25 * 60; // seconds left in the countdown
+let swIntervalId = null;
+
+function populateSwSelect() {
+  const sel = document.getElementById("swHabitSelect");
+  sel.innerHTML = "";
+  HABITS.forEach(h => {
+    const opt = document.createElement("option");
+    opt.value = h.key;
+    opt.textContent = h.label;
+    sel.appendChild(opt);
+  });
+}
+
+function fmtSwTime(totalSeconds) {
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  const pad2 = n => n < 10 ? "0" + n : "" + n;
+  return h > 0 ? `${pad2(h)}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+}
+
+function updateSwDisplay() {
+  document.getElementById("swDisplay").textContent = fmtSwTime(swRemaining);
+}
+
+function getSwDurationSeconds() {
+  const mins = parseInt(document.getElementById("swDurationInput").value, 10) || 25;
+  return mins * 60;
+}
+
+async function tickHabitToday(habitKey) {
+  const today = new Date();
+  const dateStr = fmtDate(today.getFullYear(), today.getMonth(), today.getDate());
+  const cellKey = habitKey + ":" + dateStr;
+  if (!data[cellKey]) {
+    data[cellKey] = true;
+    await saveData();
+    // Only re-render if we're currently viewing the month that contains today
+    if (viewYear === today.getFullYear() && viewMonth === today.getMonth()) {
+      render();
+    }
+  }
+}
+
+document.getElementById("stopwatchToggle").addEventListener("click", (e) => {
+  e.stopPropagation();
+  document.getElementById("stopwatchPanel").classList.toggle("open");
+});
+document.addEventListener("click", (e) => {
+  const panel = document.getElementById("stopwatchPanel");
+  const toggle = document.getElementById("stopwatchToggle");
+  if (panel.classList.contains("open") && !panel.contains(e.target) && e.target !== toggle) {
+    panel.classList.remove("open");
+  }
+});
+
+document.getElementById("swDurationInput").addEventListener("input", () => {
+  if (swRunning) return;
+  swRemaining = getSwDurationSeconds();
+  updateSwDisplay();
+});
+
+document.getElementById("swStartBtn").addEventListener("click", () => {
+  if (swRunning) return;
+  if (swRemaining <= 0) swRemaining = getSwDurationSeconds();
+  swRunning = true;
+  document.getElementById("swHabitSelect").disabled = true;
+  document.getElementById("swDurationInput").disabled = true;
+  document.getElementById("swNote").textContent = "Starting the timer marks this habit done for today.";
+  const habitKey = document.getElementById("swHabitSelect").value;
+  tickHabitToday(habitKey);
+  swIntervalId = setInterval(() => {
+    swRemaining--;
+    updateSwDisplay();
+    if (swRemaining <= 0) {
+      clearInterval(swIntervalId);
+      swRunning = false;
+      document.getElementById("swHabitSelect").disabled = false;
+      document.getElementById("swDurationInput").disabled = false;
+      document.getElementById("swNote").textContent = "Time's up! Great work.";
+    }
+  }, 1000);
+});
+document.getElementById("swPauseBtn").addEventListener("click", () => {
+  swRunning = false;
+  clearInterval(swIntervalId);
+  document.getElementById("swHabitSelect").disabled = false;
+  document.getElementById("swDurationInput").disabled = false;
+});
+document.getElementById("swResetBtn").addEventListener("click", () => {
+  swRunning = false;
+  clearInterval(swIntervalId);
+  swRemaining = getSwDurationSeconds();
+  updateSwDisplay();
+  document.getElementById("swHabitSelect").disabled = false;
+  document.getElementById("swDurationInput").disabled = false;
+  document.getElementById("swNote").textContent = "Starting the timer marks this habit done for today.";
+});
+
+populateSwSelect();
+updateSwDisplay();
+
+(async function init() {
+  const today = new Date();
+  viewYear = today.getFullYear();
+  viewMonth = today.getMonth();
+  await loadData();
+  render();
+})();
+
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => render(), 150);
+});
+</script>
+
+</body>
+</html>
